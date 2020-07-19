@@ -1,7 +1,7 @@
 const express = require('express')
 const router = new express.Router()
 const ExpressError = require('../expressError.js')
-const list = require('../fake.js')
+let list = require('../fake.js')
 
 
 // Routes:-
@@ -34,37 +34,31 @@ console.log(list)
     }
 })
 // display single item
-            // ✖︎
 router.get('/:item', (req, res, next) => {
-    console.log('this is list:')
-console.log(list)
     try {
-        console.log(req.params.name)
-    let item = list.find(it => it.name === req.params.name)
+        let item = list.find(it => it.name === req.params.item)
+
+
         if (item === undefined) {
             console.log('error item ')
             throw new ExpressError('Item not found', 402)
-        }
-        console.log('found the item!', item)
-        return res.json({Item:item})
+        }        return res.json({Item:item})
     } catch (e) {
-        console.log('error on catch')
         next(e)
     }
 })
 
 // edit a single item
-            // ✖︎
+
 router.patch('/:item', (req, res, next) => {
     try {
-        let item = list.find(it => it.name === req.params.name)
+        let item = list.find(it => it.name === req.params.item)
         console.log(item)
         if (item === undefined) {
             console.log('error item ')
             throw new ExpressError('Item do not exist', 402)
         }
         console.log('found the item!', item)
-        // change the item stuff
         req.body.name? item.name = req.body.name: item.name = item.name
         req.body.price ? item.price = req.body.price : item.price = item.price
         console.log(item)
