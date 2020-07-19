@@ -1,7 +1,6 @@
 const express = require('express')
 const router = require('./routes/routes.js')
 const ExpressError = require('./expressError.js')
-// const app = require('../supertest-express/app.js')
 const app = express()
 
 
@@ -19,11 +18,10 @@ app.use((req, res, next) => {
 
 // error handler
 app.use((err, req, res, next) => {
-    console.log(err.msg, err.status)
     const status = err.status|| 500;
     const msg = err.msg
     data = { "msg": msg, "status": status }
-    return res.json(data)
+    return res.status(status).json(data)
 })
 
 module.exports = app

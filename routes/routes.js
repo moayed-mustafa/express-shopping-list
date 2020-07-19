@@ -7,29 +7,22 @@ let list = require('../fake.js')
 // Routes:-
 // get all items
 router.get('/', (req, res) => {
-    console.log('this is list:')
-    console.log(list)
     res.json({list})
 })
 // post an item
 router.post('/', (req, res, next) => {
-    console.log('this is list:')
-console.log(list)
     try {
         if (!(req.body.name)) {
-            console.log('name error?')
-            throw new ExpressError(' Must add a name', 404)
+            throw new ExpressError(' Must add a name', 403)
         }
         if (!(req.body.price)) {
-            console.log('price error?')
-            throw new ExpressError(' Must add a price', 404)
+            throw new ExpressError(' Must add a price', 403)
         }
         const item = {name: req.body.name,  price:req.body.price};
         list.push(item)
-        const response = {Message: "item craeted", Item : item}
+        const response = {Message: "item created", Item : item}
         return res.status(201).json(response)
     } catch (e) {
-        console.log("error")
         return next(e)
     }
 })
@@ -40,8 +33,7 @@ router.get('/:item', (req, res, next) => {
 
 
         if (item === undefined) {
-            console.log('error item ')
-            throw new ExpressError('Item not found', 402)
+            throw new ExpressError('Item not found', 404)
         }        return res.json({Item:item})
     } catch (e) {
         next(e)
@@ -53,19 +45,17 @@ router.get('/:item', (req, res, next) => {
 router.patch('/:item', (req, res, next) => {
     try {
         let item = list.find(it => it.name === req.params.item)
-        console.log(item)
         if (item === undefined) {
-            console.log('error item ')
-            throw new ExpressError('Item do not exist', 402)
+            throw new ExpressError('Item do not exist', 404)
         }
-        console.log('found the item!', item)
-        req.body.name? item.name = req.body.name: item.name = item.name
-        req.body.price ? item.price = req.body.price : item.price = item.price
-        console.log(item)
+        else {
+            req.body.name? item.name = req.body.name: item.name = item.name
+            req.body.price ? item.price = req.body.price : item.price = item.price
 
-        return res.json({Msg: 'Item changed', Item:item})
+            return res.json({Message: 'Item changed', Item:item})
+
+        }
     } catch (e) {
-        console.log('error on catch patch')
         next(e)
     }
 })
@@ -73,21 +63,20 @@ router.patch('/:item', (req, res, next) => {
 // delete a single item
 router.delete('/:item', (req, res, next) => {
     try {
-        let item = list.find(it => it.name === req.params.name)
-        if (item == - 1) {
-            throw new ExpressError('Item do not exist', 402)
+
+        let item = list.find(it => it.name === req.params.item)
+        if (item === undefined) {
+            throw new ExpressError('Item do not exist', 404)
         }
 
         items.splice(item, 1)
-        return res.json({Msg: "Deleted!"})
+        return res.json({Message: "Deleted!"})
 
-    } catch (e) {
+    }
+    catch (e) {
         next(e)
     }
 })
-
-
-
 
 
 // export the router
